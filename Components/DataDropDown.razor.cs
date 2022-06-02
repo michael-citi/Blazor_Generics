@@ -46,10 +46,8 @@ namespace ComponentTest.Components
 
         private async Task OnChangeHandler(ChangeEventArgs args)
         {
-            if (Dict.TryGetValue(Guid.Parse(args.Value.ToString()), out var selectedItem))
-            {
+            if (Dict != null && Dict.TryGetValue(Guid.Parse(args.Value.ToString()), out var selectedItem))
                 await ValueChanged.InvokeAsync(selectedItem);
-            }
         }
     }
 }
