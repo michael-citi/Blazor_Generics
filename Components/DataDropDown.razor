@@ -1,0 +1,14 @@
+﻿@typeparam KeyValuePair
+
+<div class="form-control-lg">
+    <select class="form-control-plaintext" @onchange="OnChangeHandler">
+        @if (ShowDefaultOption)
+        {
+            <option value="0" hidden disabled>- Select One -</option>
+        }
+        @foreach(var (id, item) in Dict)
+        {
+            <option value="@id">@Selector(item).ToString()</option>
+        }
+    </select>
+</div>

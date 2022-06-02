@@ -1,0 +1,19 @@
+﻿@inherits LayoutComponentBase
+
+<PageTitle>ComponentTest</PageTitle>
+
+<div class="page">
+    <div class="sidebar">
+        <NavMenu />
+    </div>
+
+    <main>
+        <div class="top-row px-4">
+            <DataDropDown ApiGet="http://universities.hipolabs.com/search?name=california" KeyValuePair="UniversityData" Selector="(x => x.Name)"></DataDropDown>
+        </div>
+
+        <article class="content px-4">
+            @Body
+        </article>
+    </main>
+</div>
