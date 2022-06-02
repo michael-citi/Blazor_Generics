@@ -2,7 +2,7 @@
 
 <div class="form-control-lg">
     <select class="form-control-plaintext" @onchange="OnChangeHandler">
-        @if (Dict != null)
+        @if (Items != null)
         {
             @if (ShowDefaultOption)
             {
@@ -12,6 +12,10 @@
             {
                 <option value="@id">@Selector(item).ToString()</option>
             }
+        }
+        else
+        {
+            <option value="0">-- No Data! --</option>
         }
     </select>
 </div>

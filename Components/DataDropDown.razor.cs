@@ -20,6 +20,10 @@ namespace ComponentTest.Components
 
         [Inject] public IHttpClientFactory ClientFactory { get; set; }
 
+        /// <summary>
+        /// Used to setup data prior to rendering page elements. 
+        /// Not using OnInitializedAsync() due to race conditions with null data.
+        /// </summary>
         protected override void OnInitialized()
         {
             var request = new HttpRequestMessage(HttpMethod.Get, ApiGet);
