@@ -1,37 +1,39 @@
-﻿
-<div class="px-4 d-flex justify-content-start">
-    <textarea id="post-content" @bind="NewPostContent"></textarea>
-    <Button Color="ButtonColor.Success" 
-            Outline="true"
-            onclick="@(async () => await OnClick_AddPost())">Add</Button>
-</div>
-<br/>
-<div>
-    <Grid TItem="Post" Class="table table-hover table-bordered table-striped" 
-          DataProvider="PostGridDataProvider"
-          AllowSelection="true"
-          SelectedItemsChanged="OnSelectedItemsChanged"
-          SelectionMode="GridSelectionMode.Single"
-          @ref="ApiGrid">
-        <GridColumn TItem="Post" HeaderText="Id">
-            @context.Id
-        </GridColumn>
-        <GridColumn TItem="Post" HeaderText="Content">
-            @context.Content
-        </GridColumn>
-        <GridColumn TItem="Post" HeaderText="Date Created">
-            @context.DateCreated
-        </GridColumn>
-        <GridColumn TItem="Post" HeaderText="Last Modified">
-            @context.LastModified
-        </GridColumn>
-    </Grid>
-</div>
-<div class="px-4 d-flex  justify-content-start">
-    <Button Color="ButtonColor.Info"
-            Outline="true">Update</Button>
-    <br/>
-    <Button Color="ButtonColor.Danger"
-            Outline="true"
-            onclick="@(async () => await OnClick_DeletePosts())">Delete</Button>
-</div>
+﻿@using ComponentTest.Models
+
+<MudPaper Elevation="2" Outlined="false" MinWidth="60%" MaxWidth="60%">
+    <MudGrid>
+        <MudItem xs="12" Class="d-block pa-4 justify-content-start">
+            <MudTextField Style="max-width: 400px;" Class="flex-auto d-flex" Label="New Post Content" @bind-Value="@NewContent"></MudTextField>
+            <MudButton Class="flex-auto d-flex" StartIcon="@Icons.Material.Filled.AddBox" Size="Size.Large" Color="Color.Success"
+                       OnClick="@(async () => await OnClick_CreatePost(NewContent))">Add</MudButton>
+        </MudItem>
+        <MudItem xs="12" Class="d-flex pa-4">
+            <MudDataGrid T="Post" Items="@Posts" EditMode="DataGridEditMode.Form" Bordered="true"
+                         EditTrigger="DataGridEditTrigger.Manual"
+                         StartedEditingItem="@StartedEditingItem"
+                         CanceledEditingItem="@CanceledEditingItem"
+                         CommittedItemChanges="@(async () => await CommittedItemChanges(EditPost))">
+                <Columns>
+                    <PropertyColumn Property="x => x.Id" Title="Id" IsEditable="false"></PropertyColumn>
+                    <PropertyColumn Property="x => x.Content" Title="Content"></PropertyColumn>
+                    <PropertyColumn Property="x => x.DateCreated" Title="Date Created" IsEditable="false"></PropertyColumn>
+                    <PropertyColumn Property="x => x.LastModified" Title="Last Modified" IsEditable="false"></PropertyColumn>
+                    <TemplateColumn Title="Edit" IsEditable="false">
+                        <CellTemplate>
+                            <MudIconButton Size="Size.Small" Icon="@Icons.Material.Outlined.Edit"
+                                           OnClick="@context.Actions.StartEditingItemAsync"></MudIconButton>
+                        </CellTemplate>
+                    </TemplateColumn>
+                    <TemplateColumn Title="Delete" IsEditable="false">
+                        <CellTemplate>
+                            <MudIconButton Icon="@Icons.Material.Filled.DeleteOutline" Size="Size.Small"
+                                       Class="d-flex justify-end"
+                                       Variant="Variant.Filled" Color="Color.Error"
+                                       OnClick="@(async () => await OnClick_DeletePost(@context.Item))"></MudIconButton>
+                        </CellTemplate>
+                    </TemplateColumn>
+                </Columns>
+            </MudDataGrid>
+        </MudItem>
+    </MudGrid>
+</MudPaper>

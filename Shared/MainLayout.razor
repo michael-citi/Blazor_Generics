@@ -1,47 +1,18 @@
 ﻿@inherits LayoutComponentBase
 
+<MudThemeProvider/>
+<MudDialogProvider/>
+<MudSnackbarProvider/>
+
 <PageTitle>ComponentTest</PageTitle>
 
-<div class="bb-page">
-    <Sidebar @ref="sidebar"
-             IconName="IconName.BootstrapFill"
-             Title="API Endpoint Test"
-             DataProvider="SidebarDataProvider">
-    </Sidebar>
-    <main>
-        <div class="bb-top-row px-4 d-flex justify-content-end">
-            <DataDropDown ApiGet="http://universities.hipolabs.com/search?name=california" KeyValuePair="UniversityData" Selector="(x => x.Name)"></DataDropDown>
-        </div>
-        
-        <article class="content px-4">
-            <div class="py-2">
-                @Body
-            </div>
-        </article>
-    </main>
-</div>
-
-
-
-@code {
-    private Sidebar sidebar = default!;
-    private IEnumerable<NavItem> navItems = default!;
-
-    private async Task<SidebarDataProviderResult> SidebarDataProvider(SidebarDataProviderRequest request)
-    {
-        if (navItems is null)
-            navItems = GetNavItems();
-
-        return await Task.FromResult(request.ApplyTo(navItems));
-    }
-
-    private IEnumerable<NavItem> GetNavItems()
-    {
-        navItems = new List<NavItem>
-        {
-            new NavItem { Id = "1", Href = "/", IconName = IconName.HouseDoorFill, Text = "Home", Match=NavLinkMatch.All}
-        };
-
-        return navItems;
-    }
-}
+<MudLayout>
+    <MudAppBar Elevation="1">
+        <MudText Typo="Typo.h5" Class="ml-3">Application</MudText>
+        <MudSpacer />
+        <MudIconButton Icon="@Icons.Material.Filled.MoreVert" Color="Color.Inherit" Edge="Edge.End" />
+    </MudAppBar>
+    <MudMainContent Style="margin: 3%;">
+        @Body
+    </MudMainContent>
+</MudLayout>

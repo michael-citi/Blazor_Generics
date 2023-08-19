@@ -2,6 +2,7 @@
 
 namespace ComponentTest.Models;
 
+[Serializable]
 public class Post
 {
     [JsonPropertyName("id")]
