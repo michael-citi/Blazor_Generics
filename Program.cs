@@ -7,6 +7,7 @@ builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddHttpClient(); // necessary for calling web API's.
 builder.Services.AddMudServices();
+builder.Services.AddTelerikBlazor();
 
 var app = builder.Build();
 

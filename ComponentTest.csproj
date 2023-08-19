@@ -14,6 +14,8 @@
 
   <ItemGroup>
     <PackageReference Include="MudBlazor" Version="6.9.0" />
+    <PackageReference Include="Telerik.UI.for.Blazor" Version="4.4.0" />
   </ItemGroup>
+
 
 </Project>

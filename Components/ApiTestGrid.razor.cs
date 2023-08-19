@@ -5,14 +5,13 @@ using System.Text.Json;
 using ComponentTest.Models;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
+using Telerik.Blazor.Components;
 
 namespace ComponentTest.Components;
 
 public partial class ApiTestGrid : ComponentBase
 {
     private ObservableCollection<Post> Posts { get; set; } = new ObservableCollection<Post>();
-    private Post EditPost { get; set; }
-    private string? NewContent { get; set; }
     
     [Parameter] public string? ApiUrl { get; set; }
     
@@ -23,58 +22,52 @@ public partial class ApiTestGrid : ComponentBase
         Posts = await HttpClient.GetFromJsonAsync<ObservableCollection<Post>>(ApiUrl);
     }
 
-    protected void StartedEditingItem(Post item)
+    public void EditHandler(GridCommandEventArgs args)
     {
-        EditPost = new Post
-        {
-            Id = item.Id,
-            Content = item.Content,
-            DateCreated = item.DateCreated,
-            LastModified = item.LastModified
-        };
+        Post item = (Post)args.Item;
+        
     }
 
-    protected void CanceledEditingItem(Post item)
+    public void CancelHandler(GridCommandEventArgs args)
     {
-        EditPost = new Post();
+        Post item = (Post)args.Item;
     }
 
-    protected async Task CommittedItemChanges(Post item)
+    public async Task UpdateHandler(GridCommandEventArgs args)
     {
-        EditPost = new Post
-        {
-            Id = item.Id,
-            Content = item.Content
-        };
+        Post item = (Post)args.Item;
 
         var jsonPost = new StringContent(
-            JsonSerializer.Serialize(EditPost),
+            JsonSerializer.Serialize(item),
             Encoding.UTF8,
             MediaTypeNames.Application.Json);
 
-        using var httpResponseMessage = await HttpClient.PutAsync($"{ApiUrl}/{EditPost.Id}", jsonPost);
-        Posts = await HttpClient.GetFromJsonAsync<ObservableCollection<Post>>(ApiUrl);
+        using (var httpResponseMessage = await HttpClient.PutAsync($"{ApiUrl}/{item.Id}", jsonPost))
+        {
+            if (httpResponseMessage.IsSuccessStatusCode)
+                Posts = await HttpClient.GetFromJsonAsync<ObservableCollection<Post>>(ApiUrl);
+        };
     }
 
-    protected async Task OnClick_CreatePost(string? content)
+    protected async Task CreateHandler(GridCommandEventArgs args)
     {
-        if (!string.IsNullOrEmpty(content))
-        {
-            var post = new Post { Content = content };
+        Post item = (Post)args.Item;
+        
+        var jsonPost = new StringContent(
+            JsonSerializer.Serialize(item),
+            Encoding.UTF8,
+            MediaTypeNames.Application.Json);
 
-            var jsonPost = new StringContent(
-                JsonSerializer.Serialize(post),
-                Encoding.UTF8,
-                MediaTypeNames.Application.Json);
-            
-            using var httpResponseMessage = await HttpClient.PostAsync(ApiUrl, jsonPost);
-            Posts = await HttpClient.GetFromJsonAsync<ObservableCollection<Post>>(ApiUrl);
-            NewContent = string.Empty;
+        using (var httpResponseMessage = await HttpClient.PostAsync(ApiUrl, jsonPost))
+        {
+            if (httpResponseMessage.IsSuccessStatusCode)
+                Posts = await HttpClient.GetFromJsonAsync<ObservableCollection<Post>>(ApiUrl);
         }
     }
 
-    protected async Task OnClick_DeletePost(Post item)
+    protected async Task DeleteHandler(GridCommandEventArgs args)
     {
+        Post item = (Post)args.Item;
         await HttpClient.DeleteAsync($"{ApiUrl}/{item.Id}");
         Posts = await HttpClient.GetFromJsonAsync<ObservableCollection<Post>>(ApiUrl);
     }
